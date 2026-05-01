@@ -1,5 +1,3 @@
-// UploadForm.jsx (fixed)
-
 import { useState } from "react";
 import { uploadImage } from "../services/api";
 
@@ -30,6 +28,7 @@ const UploadForm = ({ setResult, fetchHistory }) => {
       setResult(res.data.plate || "No Plate Found");
 
       if (fetchHistory) fetchHistory();
+
     } catch (error) {
       console.log(error);
       alert(error.response?.data?.message || "Upload Failed");
@@ -41,31 +40,44 @@ const UploadForm = ({ setResult, fetchHistory }) => {
   return (
     <div className="mt-8 w-full max-w-lg bg-black border border-red-500 p-8 rounded-3xl text-center">
 
+      {/* Upload Box */}
       <label className="cursor-pointer block border-2 border-dashed border-red-500 rounded-2xl p-10">
 
-        <p className="text-white">Click to Upload Image</p>
+        <p className="text-white text-lg font-semibold">
+          Click to Upload Image
+        </p>
+
+        <p className="text-gray-400 text-sm mt-2">
+          Camera / Gallery
+        </p>
 
         <input
           type="file"
+          accept="image/*"
+          capture="environment"
           onChange={handleChange}
           className="hidden"
-          accept="image/*"
         />
       </label>
 
+      {/* Preview */}
       {preview && (
         <img
           src={preview}
-          className="mt-4 w-full h-48 object-cover rounded-xl"
+          alt="preview"
+          className="mt-4 w-full h-48 object-cover rounded-xl border border-red-500"
         />
       )}
 
+      {/* Button */}
       <button
         onClick={handleSubmit}
-        className="mt-6 w-full bg-red-600 text-white py-3 rounded-xl"
+        disabled={loading}
+        className="mt-6 w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold"
       >
         {loading ? "Processing..." : "Upload & Detect"}
       </button>
+
     </div>
   );
 };
