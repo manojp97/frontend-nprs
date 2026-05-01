@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { uploadImage } from "../services/api";
 
 const UploadForm = ({ setResult, fetchHistory }) => {
@@ -6,9 +6,12 @@ const UploadForm = ({ setResult, fetchHistory }) => {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // hidden inputs
+  const galleryInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
+
   const handleChange = (e) => {
     const selectedFile = e.target.files[0];
-
     if (!selectedFile) return;
 
     setFile(selectedFile);
@@ -41,29 +44,54 @@ const UploadForm = ({ setResult, fetchHistory }) => {
   return (
     <div className="mt-8 w-full max-w-lg bg-black border border-red-500 p-8 rounded-3xl text-center shadow-lg">
 
-      {/* Upload Box */}
-      <label className="cursor-pointer block border-2 border-dashed border-red-500 rounded-2xl p-10 hover:bg-red-900/20 transition">
+      {/* Title */}
+      <p className="text-white text-xl font-semibold mb-6">
+        Upload Vehicle Image
+      </p>
 
-        <p className="text-white text-lg font-semibold">
-          Click to Upload Image
-        </p>
+      {/* Buttons */}
+      <div className="grid grid-cols-2 gap-4">
 
-        <p className="text-gray-400 text-sm mt-2">
-          Camera / Gallery / Files
-        </p>
+        {/* Gallery */}
+        <button
+          onClick={() => galleryInputRef.current.click()}
+          className="bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold"
+        >
+          Gallery
+        </button>
 
-        {/* Camera + Gallery Choose Option */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleChange}
-          className="hidden"
-        />
-      </label>
+        {/* Camera */}
+        <button
+          onClick={() => cameraInputRef.current.click()}
+          className="bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold"
+        >
+          Live Camera
+        </button>
+
+      </div>
+
+      {/* Hidden Gallery Input */}
+      <input
+        ref={galleryInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleChange}
+        className="hidden"
+      />
+
+      {/* Hidden Camera Input */}
+      <input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={handleChange}
+        className="hidden"
+      />
 
       {/* Preview */}
       {preview && (
-        <div className="mt-5">
+        <div className="mt-6">
           <img
             src={preview}
             alt="preview"
@@ -72,11 +100,11 @@ const UploadForm = ({ setResult, fetchHistory }) => {
         </div>
       )}
 
-      {/* Upload Button */}
+      {/* Detect Button */}
       <button
         onClick={handleSubmit}
         disabled={loading}
-        className="mt-6 w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold transition"
+        className="mt-6 w-full bg-white text-black py-3 rounded-xl font-bold hover:bg-gray-200 transition"
       >
         {loading ? "Processing..." : "Upload & Detect"}
       </button>
