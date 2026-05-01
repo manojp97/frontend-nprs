@@ -1,3 +1,5 @@
+// UploadForm.jsx (fixed)
+
 import { useState } from "react";
 import { uploadImage } from "../services/api";
 
@@ -15,67 +17,55 @@ const UploadForm = ({ setResult, fetchHistory }) => {
   };
 
   const handleSubmit = async () => {
-    if (!file) return alert("Please select image");
+    try {
+      if (!file) return alert("Please select image");
 
-    setLoading(true);
+      setLoading(true);
 
-    const formData = new FormData();
-    formData.append("image", file);
+      const formData = new FormData();
+      formData.append("image", file);
 
-    const res = await uploadImage(formData);
+      const res = await uploadImage(formData);
 
-    setResult(res.data.plate);
-    fetchHistory();
+      setResult(res.data.plate || "No Plate Found");
 
-    setLoading(false);
+      if (fetchHistory) fetchHistory();
+    } catch (error) {
+      console.log(error);
+      alert(error.response?.data?.message || "Upload Failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="mt-8 w-full max-w-lg bg-black border border-red-500 p-8 rounded-3xl shadow-[0_0_20px_rgba(255,0,0,0.3)] text-center">
+    <div className="mt-8 w-full max-w-lg bg-black border border-red-500 p-8 rounded-3xl text-center">
 
-      {/* Upload Box */}
-      <label className="cursor-pointer block border-2 border-dashed border-red-500 rounded-2xl p-10 hover:bg-red-900/20 transition-all">
+      <label className="cursor-pointer block border-2 border-dashed border-red-500 rounded-2xl p-10">
 
-        <div className="flex flex-col items-center gap-3">
-
-          <span className="text-4xl text-red-500"></span>
-
-          <p className="text-lg font-semibold text-gray-200">
-            Click to Upload Image
-          </p>
-
-          <p className="text-sm text-gray-400">
-            JPG, PNG (Max 5MB)
-          </p>
-
-        </div>
+        <p className="text-white">Click to Upload Image</p>
 
         <input
           type="file"
           onChange={handleChange}
           className="hidden"
+          accept="image/*"
         />
       </label>
 
-      {/* Preview */}
       {preview && (
-        <div className="mt-6">
-          <img
-            src={preview}
-            alt="preview"
-            className="w-full h-48 object-cover rounded-xl border border-red-500"
-          />
-        </div>
+        <img
+          src={preview}
+          className="mt-4 w-full h-48 object-cover rounded-xl"
+        />
       )}
 
-      {/* Button */}
       <button
         onClick={handleSubmit}
-        className="mt-6 w-full bg-gradient-to-r from-red-500 to-red-700 text-white py-3 rounded-xl font-semibold hover:scale-105 transition-all shadow-lg"
+        className="mt-6 w-full bg-red-600 text-white py-3 rounded-xl"
       >
         {loading ? "Processing..." : "Upload & Detect"}
       </button>
-
     </div>
   );
 };
