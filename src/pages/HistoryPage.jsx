@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { getHistory } from "../services/api";
 
+// Dynamic Image URL
+const IMAGE_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000/uploads/"
+    : "https://backend-nprs.onrender.com/uploads/";
+
 const HistoryPage = () => {
   const [data, setData] = useState([]);
 
@@ -20,19 +26,19 @@ const HistoryPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-900">
-
+      
       <Navbar />
 
       <div className="pt-24 px-4 max-w-6xl mx-auto">
 
         {/* Title */}
-        <h1 className="text-3xl font-bold text-center mb-6 text-red-500">
+        <h1 className="text-3xl font-bold text-center mb-8 text-red-500">
           History
         </h1>
 
-        {/* Empty */}
+        {/* Empty State */}
         {data.length === 0 ? (
-          <p className="text-center text-gray-400">
+          <p className="text-center text-gray-400 text-lg">
             No history found
           </p>
         ) : (
@@ -41,23 +47,23 @@ const HistoryPage = () => {
             {data.map((item, i) => (
               <div
                 key={i}
-                className="bg-black border border-red-500 p-4 rounded-2xl shadow-[0_0_15px_rgba(255,0,0,0.2)] hover:scale-105 transition"
+                className="bg-black border border-red-500 p-4 rounded-2xl shadow-[0_0_15px_rgba(255,0,0,0.2)] hover:scale-105 transition-all duration-300"
               >
-                
+
                 {/* Plate Number */}
-                <p className="text-lg font-semibold text-red-400">
+                <p className="text-xl font-bold text-red-400 tracking-widest text-center">
                   {item.plateNumber}
                 </p>
 
                 {/* Image */}
                 <img
-                  src={`http://localhost:5000/uploads/${item.image}`}
-                  alt="plate"
-                  className="w-full h-32 object-cover rounded-lg mt-3 border border-red-400"
+                  src={IMAGE_URL + item.image}
+                  alt="vehicle"
+                  className="w-full h-40 object-cover rounded-xl mt-4 border border-red-400"
                 />
 
                 {/* Date */}
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="text-xs text-gray-400 mt-3 text-center">
                   {new Date(item.createdAt).toLocaleString()}
                 </p>
 
