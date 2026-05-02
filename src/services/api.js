@@ -9,7 +9,7 @@ const API = axios.create({
   baseURL: BASE_URL,
 });
 
-// token auto add
+// Token auto add
 API.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
 
@@ -22,7 +22,6 @@ API.interceptors.request.use((req) => {
 
 // AUTH
 export const login = (data) => API.post("/auth/login", data);
-
 export const signup = (data) => API.post("/auth/signup", data);
 
 // UPLOAD
@@ -35,5 +34,9 @@ export const uploadImage = (formData) =>
 
 // HISTORY
 export const getHistory = () => API.get("/history");
+
+// DELETE HISTORY
+export const deleteHistory = (id) =>
+  API.delete(`/history/${id}`);
 
 export default API;
